@@ -1,0 +1,109 @@
+Installl
+
+puppet module install deric-mesos
+
+puppet module install deric-zookeeper
+
+
+Then add
+
+mesosmaster host group
+
+add - classes  - 
+
+mesos
+zookeeper
+mesos-master
+
+and this is yaml
+
+---
+classes:
+  mesos:
+    manage_python: true
+    repo: mesosphere
+    zookeeper: zk://10.9.146.67:2181,10.9.146.63:2181,10.9.146.50:2181/mesos
+  mesos::master:
+    cluster: mesos
+    env_var: (hash)
+      MESOS_LOG_DIR: /var/log/mesos
+    force_provider: upstart
+    options: (hash)
+      quorum: '2'
+    zookeeper: zk://10.9.146.67:2181,10.9.146.63:2181,10.9.146.50:2181/mesos
+  zookeeper:
+    servers: (array)
+    - 10.9.146.67
+    - 10.9.146.63
+    - 10.9.146.50
+parameters:
+  puppetmaster: localization-puppetmaster-9182.phx01.dev.ebayc3.com
+  hostgroup: MesosMaster
+  root_pw: ''
+  foreman_env: production
+  foreman_subnets: []
+  foreman_interfaces:
+  - mac: 74:db:d1:e0:bf:c4
+    ip: 10.9.146.67
+    type: Interface
+    name: 
+    attrs: {}
+    virtual: false
+    link: true
+    identifier: eth0
+    managed: true
+    subnet: 
+environment: production
+
+
+
+
+access mesos masters at 
+
+10.9.146.67:5050
+
+
+
+Add mesos slave host group
+
+add classes
+
+mesos
+mesos-slave
+
+and this is yaml for that.
+
+
+---
+classes:
+  mesos:
+    manage_python: true
+    repo: mesosphere
+    zookeeper: zk://10.9.146.67:2181,10.9.146.63:2181,10.9.146.50:2181/mesos
+  mesos::slave:
+    checkpoint: true
+    env_var: (hash)
+      MESOS_LOG_DIR: /var/log/mesos
+    force_provider: upstart
+    zookeeper: zk://10.9.146.67:2181,10.9.146.63:2181,10.9.146.50:2181/mesos
+parameters:
+  puppetmaster: localization-puppetmaster-9182.phx01.dev.ebayc3.com
+  hostgroup: MesosSlave
+  root_pw: ''
+  foreman_env: production
+  foreman_subnets: []
+  foreman_interfaces:
+  - mac: 74:db:d1:e0:81:e1
+    ip: 10.9.146.60
+    type: Interface
+    name: 
+    attrs: {}
+    virtual: false
+    link: true
+    identifier: eth0
+    managed: true
+    subnet: 
+environment: production
+
+
+
